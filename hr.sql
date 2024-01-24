@@ -107,6 +107,113 @@ WHERE
 
 
 
+-- 2일차
+-- LAST_NAME에 u가 포함되는 사원들 사번, lastname 조회
+SELECT LAST_NAME, EMPLOYEE_ID 
+FROM EMPLOYEES e
+WHERE LAST_NAME LIKE '%u%';
+
+-- LAST_NAME의 4번째 문자가 a인 사원들 사번, lastname 조회
+SELECT EMPLOYEE_ID , LAST_NAME  
+FROM EMPLOYEES e
+WHERE LAST_NAME LIKE '___a%'
+ORDER BY LAST_NAME ;
+
+-- LAST_NAME에 a e 글자 들어있는 사원 사번, lastname, lastname오름차순
+SELECT EMPLOYEE_ID , LAST_NAME  
+FROM EMPLOYEES e 
+WHERE LAST_NAME LIKE '%a%' AND LAST_NAME LIKE  '%e%'
+ORDER BY LAST_NAME ;
+
+SELECT EMPLOYEE_ID , LAST_NAME  
+FROM EMPLOYEES e 
+WHERE LAST_NAME LIKE '%a%e%' OR  LAST_NAME LIKE  '%e%a%'
+ORDER BY LAST_NAME ;
+
+-- LAST_NAME에 a 혹은 e 글자 들어있는 사원 사번, lastname, lastname오름차순
+SELECT EMPLOYEE_ID , LAST_NAME  
+FROM EMPLOYEES e 
+WHERE LAST_NAME LIKE '%a%' OR  LAST_NAME LIKE  '%e%'
+ORDER BY LAST_NAME ;
+
+-- 
+SELECT *
+FROM EMPLOYEES e ;
+
+-- MANAGER_ID가 없는 사원들의 LAST_NAME , JOB_ID조회
+SELECT LAST_NAME , JOB_ID
+FROM EMPLOYEES e
+WHERE MANAGER_ID IS NULL;
+
+-- ST_CLERK인 JOB_ID를 가진 사원이 없는 부서 ID조회(단, 부서번호가 NULL인 사원 제외)
+SELECT DISTINCT DEPARTMENT_ID 
+FROM EMPLOYEES e
+WHERE JOB_ID != 'ST_CLERK' AND DEPARTMENT_ID IS NOT NULL;
+
+
+-- COMMISSION_PCT가 NULL이 아닌 사원들 중 COMMISSION = SALARY * COMMISSION_PCT
+-- 를 구하여 EMPLOYYEE_ID, FIRST_NAME, JOB_ID, COMISSION 조회
+SELECT EMPLOYEE_ID, FIRST_NAME, JOB_ID, SALARY * COMMISSION_PCT AS COMMISSION
+FROM EMPLOYEES e
+WHERE COMMISSION_PCT IS NOT NULL;
+
+-- NULL * 숫자 = NULL
+SELECT EMPLOYEE_ID, FIRST_NAME, JOB_ID, SALARY, COMMISSION_PCT , SALARY * COMMISSION_PCT AS COMMISSION
+FROM EMPLOYEES e;
+
+
+-- FIRST_NAME이 'Curtis'인 사원의 first_name, last_name, email,phone_number, job_id를 조회
+-- 단 job_id결과는 소문자로 출력
+SELECT FIRST_NAME ,LAST_NAME ,EMAIL ,PHONE_NUMBER ,LOWER(JOB_ID) AS JOB_ID
+FROM EMPLOYEES e
+WHERE FIRST_NAME = 'Curtis';
+
+-- 부서번호가 60,70,80,90 인 사원들의 employee_id, first_name, hire_date, job_id 조회
+-- 단, job_id가 IT_PROG인 사원의 경우 프로그래머로 변경하여 출력한다.
+SELECT EMPLOYEE_ID , FIRST_NAME , HIRE_DATE , REPLACE(JOB_ID, 'IT_PROG', '프로그래머')
+FROM EMPLOYEES e
+WHERE DEPARTMENT_ID IN (60,70,80,90);
+
+--job_id가 AD_PRES, PU_CLERK인 사원들의 employee_id, first_name, job_id 조회
+-- 단, 사원명은 first_name과 last_name을 공백을 포함하여 연결
+-- 'abc' 'def' => 'abc def'
+SELECT EMPLOYEE_ID , CONCAT(FIRST_NAME,CONCAT(' ',LAST_NAME)) AS NAME  , JOB_ID 
+FROM EMPLOYEES e 
+WHERE JOB_ID IN ('AD_PRES','PU_CLERK');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
