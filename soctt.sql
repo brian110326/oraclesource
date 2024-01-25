@@ -216,12 +216,14 @@ SELECT *
 FROM EMP e
 WHERE ENAME LIKE 'S%';
 
+
 -- 사원이름의 두번째 글자가 L인 사원조회
 -- 언더바 _ : 문자 1개를 의미
 -- % : 문자 개수는 무한대
 SELECT *
 FROM EMP e
 WHERE ENAME LIKE '_L%';
+
 
 -- 사원이름에 AM 문자가 포함된 사원조회
 SELECT *
@@ -344,6 +346,7 @@ WHERE ENAME = UPPER('clark');
 SELECT ENAME , LENGTH(ENAME), LENGTHB(ENAME) 
 FROM EMP e;
 
+
 -- 함수결과를 보고싶은데 테이블이 없는 경우 : 임시테이블 DUAL 사용
 -- 한글은 문자 하나당 3byte가 할당되어있음, 영어는 1byte 할당
 SELECT LENGTH('한글'), LENGTHB('한글') 
@@ -356,8 +359,11 @@ WHERE LENGTH(JOB) >= 6;
 
 -- 3. 문자열 일부 추출 : SUBSTR(문자열데이터, 시작위치, 추출길이)
 -- 추출길이는 생략가능
-SELECT JOB , SUBSTR(JOB,1,2), SUBSTR(JOB,3,2), SUBSTR(JOB ,5)  
+SELECT JOB , SUBSTR(JOB,1,1), SUBSTR(JOB,3,2), SUBSTR(JOB ,5)  
 FROM EMP e;
+
+SELECT ENAME , JOB , SUBSTR(JOB, -2,2)  
+FROM EMP e ;
 
 -- 시작위치가 음수면 오른쪽 끝
 SELECT JOB , SUBSTR(JOB,-1,2), SUBSTR(JOB,-3,2), SUBSTR(JOB ,-5)  
@@ -372,9 +378,14 @@ SELECT
 FROM
 	DUAL ;
 
+SELECT INSTR('BRIAN', 'A', 2, 2) 
+FROM DUAL ;
+
 -- 사원이름에 S가 들어있는 사원 조회
 -- LIKE 사용가능
 -- 0보다 크면 1부터 찾는것이 시작이니 있다면 찾게됨
+
+
 SELECT *
 FROM EMP e
 WHERE INSTR(ENAME,'S') > 0; 
@@ -409,6 +420,7 @@ WHERE ENAME = 'SMITH';
 -- TRIM(삭제옵션(선택), 삭제할문자) FROM 원본문자열
 -- 'SMITH' = 'SMITH ' ==> 다른 문자열
 -- 요거좀 헷갈림
+
 SELECT
 	'[' || '   ___Oracle___   ' || ']' AS trim_before,
 	'[' || TRIM('   ___Oracle___   ') || ']' AS trim,
@@ -437,6 +449,7 @@ SELECT
 	ROUND(1234.5678, -2) AS ROUND_MINUS2
 FROM DUAL ;
 
+
 -- TRUNC(숫자, 버릴위치) : 버림
 SELECT
 	TRUNC(1234.5678) AS TRUNC,
@@ -454,6 +467,7 @@ FROM
 SELECT CEIL(3.14), FLOOR(3.14), CEIL(-3.14), FLOOR(-3.14)
 FROM DUAL ;
 
+
 -- MOD : 나머지 구하는 함수
 SELECT 11/5, MOD(11,5)
 FROM DUAL ;
@@ -469,6 +483,7 @@ FROM DUAL ;
 SELECT SYSDATE, SYSDATE + 1 , SYSDATE - 1 
 FROM DUAL ;
 
+
 -- ADD_MONTHS() : 몇개월 이후의 날짜 구하기
 SELECT SYSDATE, ADD_MONTHS(SYSDATE, 3) 
 FROM DUAL ;
@@ -482,11 +497,15 @@ FROM EMP e ;
 SELECT HIREDATE , SYSDATE , FLOOR(MONTHS_BETWEEN(SYSDATE, HIREDATE)) AS TOTAL 
 FROM EMP e ;
 
+SELECT HIREDATE , SYSDATE , TRUNC(MONTHS_BETWEEN(SYSDATE, HIREDATE) / 12, 2) AS 년차차이 
+FROM EMP e ;
+
 --NEXT_DAY, LAST_DAY
 -- NEXT_DAY(날짜, 요일) : 특정날짜를 기준으로 돌아오는 요일의 날짜 출력
 -- LAST_DAY(날짜) : 특정날짜가 속한 달의 마지막 날짜
 SELECT SYSDATE , NEXT_DAY(SYSDATE,'월요일'), LAST_DAY(SYSDATE)  
 FROM DUAL ;
+
 
 -- 데이터 타입
 -- NUMBER : 숫자
@@ -511,6 +530,9 @@ WHERE ENAME = 'FORD';
 
 -- Y : 연도 , M : 월, D : 일, HH : 시, MI : 분, SS : 초 HH24 : 시를 24시간으로, AM(PM) : 오전인지 오후인지
 SELECT TO_CHAR(SYSDATE, 'YYYY/MM/DD'), SYSDATE , TO_CHAR(SYSDATE, 'YYYY/MM/DD HH : MI : SS PM') 
+FROM DUAL ;
+
+SELECT SYSDATE , TO_CHAR(SYSDATE, 'YYYY/MM/DD HH : MI : SS PM') 
 FROM DUAL ;
 
 --TO_NUMBER(문자열, 숫자형식) : 문자열 데이터를 지정한 형태의 숫자로 인식하여 숫자 데이터로 변환
@@ -572,7 +594,6 @@ SELECT
 	DECODE(JOB, 'MANAGER' , SAL * 1.1, 'SALESMAN', SAL * 1.05, 'ANALYST', SAL, SAL * 1.03) AS UPSAL
 FROM
 	EMP e;
-
 -- CASE문
 SELECT
 	EMPNO ,
@@ -582,15 +603,16 @@ SELECT
 	CASE
 		JOB WHEN 'MANAGER' THEN SAL * 1.1
 		WHEN 'SALESMAN' THEN SAL * 1.05
-		WHEN 'ANALYST' THEN SAL 
+		WHEN 'ANALYST' THEN SAL
 		ELSE SAL * 1.03
 	END AS UPSAL2
 FROM
 	EMP e;
-
 -- COMM이 NULL이라면 해당사항없음 출력 
 -- COMM이 0이라면 수당없음 출력
 -- COMM이 0보다 클 때 실제 COMM출력
+
+-- then 뒤에 오는 타입이 동일해야한다
 SELECT
 	EMPNO ,
 	ENAME ,
@@ -602,7 +624,6 @@ SELECT
 	END AS COMM_TEXT
 FROM
 	EMP e ;
-
 -- 실습1 : 강의자료
 SELECT
 	EMPNO,
@@ -611,228 +632,250 @@ SELECT
 	ROUND(((SAL / 21.5) / 8), 1) AS TIME_PAY
 FROM
 	EMP e ;
-
 -- 실습2 : 강의자료
 SELECT
 	EMPNO ,
 	ENAME,
 	HIREDATE ,
 	TO_CHAR(NEXT_DAY(ADD_MONTHS(HIREDATE, 3), '월요일'), 'YY/MM/DD') AS R_JOB,
-	NVL(TO_CHAR(COMM), 'N/A') AS COMM 
+	NVL(TO_CHAR(COMM), 'N/A') AS COMM
 FROM
 	EMP e ;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+-- 3일차
+-- 실습3
+-- DECODE, SUBSTR로도 해보기
+SELECT
+	EMPNO,
+	ENAME,
+	MGR,
+	CASE
+		WHEN MGR IS NULL THEN '0000'
+		WHEN TO_CHAR(MGR) LIKE '75%' THEN '5555'
+		WHEN TO_CHAR(MGR) LIKE '76%' THEN '6666'
+		WHEN TO_CHAR(MGR) LIKE '76%' THEN '7777'
+		WHEN TO_CHAR(MGR) LIKE '78%' THEN '8888'
+		ELSE TO_CHAR(MGR)
+	END AS CHG_MGR
+FROM
+		EMP e ;
+
+SELECT
+	EMPNO,
+	ENAME,
+	MGR,
+	CASE SUBSTR(TO_CHAR(NVL(MGR,0)), 1, 2)
+		WHEN '0' THEN '0000'
+		WHEN '75%' THEN '5555'
+		WHEN '76%' THEN '6666'
+		WHEN '76%' THEN '7777'
+		WHEN '78%' THEN '8888'
+		ELSE TO_CHAR(MGR)
+	END AS CHG_MGR
+FROM
+		EMP e ;	
+
+-- 다중행 함수
+-- sum(), avg(), count(), max(), min()
+	
+-- 단일 그룹의 그룹 함수가 아닙니다(여러 행이 나올수 있는 컬럼을 추가한 경우)	
+-- 형태가 다르기 때문에	
+SELECT SUM(SAL), AVG(SAL), MAX(SAL), MIN(SAL), COUNT(SAL) , ENAME  
+FROM EMP e ;
+
+-- 동일한 급여를 제외
+SELECT SUM(DISTINCT SAL)
+FROM EMP e ;
+
+SELECT COUNT(*) 
+FROM EMP e ;
+
+-- 부서번호가 30인 사원수
+SELECT COUNT(*) 
+FROM EMP e
+WHERE DEPTNO = 30;
+
+-- 부서번호가 30인 사원 중 급여의 최대 최소 값
+SELECT MAX(SAL), MIN(SAL)  
+FROM EMP e
+WHERE DEPTNO = 30;
+
+-- 부서번호가 20인 사원중 입사일 중에서 제일 최근 입사일 조회
+SELECT MAX(HIREDATE) 
+FROM EMP e 
+WHERE DEPTNO = 20;
+	
+-- 부서번호가 20인 사람의 입사일 중에서 제일 오래돈 입사일 조회
+SELECT MIN(HIREDATE) 
+FROM EMP e 
+WHERE DEPTNO = 20;
+	
+-- 부서번호가 30인 사원 중에서 sal 중복값 제거한 후 평균
+SELECT AVG(DISTINCT SAL) 
+FROM EMP e
+WHERE DEPTNO = 30;
+	
+-- 부서별 급여 합계 구하기
+-- 결과값을 원하는 열로 묶기 : GROUP BY
+-- GROUP BY : 그룹화할 열 이름 , HAVING : GROUP BY랑 같이 쓰는 조건
+
+-- 순서
+-- SELECT : 5번
+-- FROM : 1번
+-- WHERE : 2번
+-- GROUP BY : 3번
+-- HAVING : 4번
+-- ORDER BY : 6번
+-- FROM => WHERE => GROUP BY => HAVING => SELECT => ORDER BY
+
+SELECT DEPTNO , SUM(SAL) AS SUM 
+FROM EMP e
+GROUP BY DEPTNO 
+ORDER BY DEPTNO ;
+
+-- 부서별 평균 급여
+SELECT DEPTNO , FLOOR(AVG(SAL)) AS AVERAGE  
+FROM EMP e 
+GROUP BY DEPTNO
+ORDER BY DEPTNO ;
+	
+-- 부서번호, 직무별 급여 평균
+SELECT DEPTNO , JOB , AVG(SAL) 
+FROM EMP e
+GROUP BY DEPTNO , JOB
+ORDER BY DEPTNO ;
+
+-- HAVING : GROUP BY 절에 조건을 사용할 때 (필수는 아님)
+-- 부서번호, 직무별 급여 평균 + 평균 급여가 2000 이상인 부서번호, 직책, 부서별 직책 평균 급여
+SELECT DEPTNO , JOB , AVG(SAL) AS AVERAGE 
+FROM EMP e
+GROUP BY DEPTNO , JOB 
+HAVING AVG(SAL) >= 2000
+ORDER BY AVERAGE;
+
+SELECT DEPTNO , JOB , AVG(SAL) AS AVERAGE 
+FROM EMP e
+WHERE SAL <= 3000
+GROUP BY DEPTNO , JOB 
+HAVING AVG(SAL) >= 2000
+ORDER BY AVERAGE;
+	
+-- 같은 직무에 종사하는 사원이 3명 이상인 직무와 인원수를 출력
+SELECT JOB , COUNT(EMPNO) AS 사원수 
+FROM EMP e
+GROUP BY JOB 
+HAVING COUNT(EMPNO) >= 3
+ORDER BY 사원수;
+	
+-- 사원들의 입사연도를 기준으로 부서별 몇명있는지
+SELECT  TO_CHAR(HIREDATE, 'YYYY') AS YEAR, DEPTNO , COUNT(EMPNO) AS 사원수
+FROM EMP e
+GROUP BY TO_CHAR(HIREDATE, 'YYYY') , DEPTNO
+ORDER BY YEAR, DEPTNO ;
+
+-- JOIN : 여러 테이블을 하나의 테이블처럼 사용
+-- EMP 테이블과 DEPT JOIN
+-- JOIN시 테이블에 동일한 컬럼명 존재 시 명확히 표시
+SELECT e.ENAME , e.SAL , e.DEPTNO , d.DNAME , d.LOC 
+FROM EMP e , DEPT d
+WHERE e.DEPTNO = d.DEPTNO ;
+
+-- JOIN 조건을 무조건 명시해야한다. 안그러면 가능한 모든 조합을 명시해줌
+SELECT e.ENAME , e.SAL , e.DEPTNO , d.DNAME , d.LOC 
+FROM EMP e , DEPT d;	
+
+-- 1) 내부 JOIN : 일치하는 값이 있는 경우
+-- ~~join on 같이 JOIN 할 조건
+SELECT e.ENAME , e.SAL , e.DEPTNO , d.DNAME , d.LOC 
+FROM EMP e INNER JOIN DEPT d ON e.DEPTNO = d.DEPTNO
+WHERE e.SAL >= 3000;	
+	
+-- EMP, SALGRADE
+-- 1번경우
+SELECT e.SAL ,s.GRADE , s.LOSAL , s.HISAL 
+FROM EMP e JOIN SALGRADE s ON e.SAL BETWEEN s.LOSAL AND s.HISAL ;
+
+-- 2번경우
+SELECT *
+FROM EMP e , SALGRADE s 
+WHERE e.SAL BETWEEN s.LOSAL AND s.HISAL ;
+	
+-- EMP, EMP JOIN(self JOIN)
+SELECT e.EMPNO, e.ENAME, e.MGR , e2.ENAME AS MANAGER_NAME
+FROM EMP e, EMP e2
+WHERE e.MGR = e2.EMPNO ;
+	
+-- 2) 외부 JOIN
+-- 왼쪽 외부 JOIN : LEFT OUTER JOIN
+-- 오른쪽 외부 JOIN	: RIGHT OUTER JOIN
+
+-- 기준이 EMP e가 기준
+SELECT e.EMPNO, e.ENAME, e.MGR , e2.ENAME AS MANAGER_NAME
+FROM EMP e LEFT OUTER JOIN EMP e2 ON e.MGR = e2.EMPNO;
+
+-- 기준이 EMP e2가 기준 : e2가 기준이므로 e2의 행개수만큼 나와야한다
+SELECT e.EMPNO, e.ENAME, e.MGR , e2.ENAME AS MANAGER_NAME
+FROM EMP e RIGHT OUTER JOIN EMP e2 ON e.MGR = e2.EMPNO;
+	
+-- 각 부서별 평균 급여, 최대급여, 최소급여, 사원수
+-- 부서번호, 부서명, 평균 급여, 최대급여, 최소급여, 사원수 순으로
+-- GROUP BY 표현식이 아닙니다 : GROUP BY 옆에 오는 칼럼만 SELECT 절에 사용 가능
+SELECT e.DEPTNO, d.DNAME , AVG(e.SAL), MIN(e.SAL), MAX(e.SAL) , COUNT(*)  
+FROM EMP e INNER JOIN DEPT d ON e.DEPTNO = d.DEPTNO 
+GROUP BY e.DEPTNO, d.DNAME 
+ORDER BY e.DEPTNO ;
+	
+-- EMP 테이블 3개 JOIN
+SELECT
+	*
+FROM
+	EMP e1
+JOIN EMP e2 ON
+	e1.EMPNO = e2.EMPNO
+JOIN EMP e3 ON
+	e2.EMPNO = e3.EMPNO ;
+	
+-- 모든 부서 정보와 사원 정보를 출력
+-- 부서번호, 사원 이름순으로 정렬하여 출력
+-- 부서번호, 부서명, 사원번호, 사원명, 직무명, 급여
+-- DEPT 테이블을 기준으로 출력
+SELECT d.DEPTNO , d.DNAME , e.EMPNO , e.ENAME , e.JOB , e.SAL 
+FROM DEPT d LEFT JOIN EMP e ON d.DEPTNO = e.DEPTNO
+ORDER BY d.DEPTNO , e.ENAME ;
+
+SELECT d.DEPTNO , d.DNAME , e.EMPNO , e.ENAME , e.JOB , e.SAL 
+FROM  EMP e RIGHT JOIN DEPT d ON d.DEPTNO = e.DEPTNO
+ORDER BY d.DEPTNO , e.ENAME ;
+	
+-- 모든 부서 정보와 사원 정보를 출력
+-- 부서번호, 사원 이름순으로 정렬하여 출력
+-- 부서번호, 부서명, 사원번호, 사원명, 직무명, 급여, LOSAL, HISAL, GRADE
+-- DEPT 테이블을 기준으로 출력
+SELECT
+	d.DEPTNO ,
+	d.DNAME ,
+	e.EMPNO ,
+	e.ENAME ,
+	e.JOB ,
+	e.SAL ,
+	s.LOSAL ,
+	s.HISAL ,
+	s.GRADE
+FROM
+	DEPT d
+LEFT JOIN EMP e ON
+	d.DEPTNO = e.DEPTNO
+LEFT JOIN SALGRADE s ON
+	e.SAL BETWEEN s.LOSAL AND s.HISAL
+ORDER BY
+	d.DEPTNO ,
+	e.ENAME ;	
+	
+	
+	
+	
+	
+	
 
 
 
