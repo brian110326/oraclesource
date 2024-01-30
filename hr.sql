@@ -450,6 +450,7 @@ FROM idx_employees
 WHERE FIRST_NAME = 'Jack';
 
 
+-- 6일차
 
 
 
