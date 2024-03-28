@@ -271,7 +271,22 @@ WHERE rnum > ? ;
 -- start 계산 : 페이지번호 * 한 페이지당 게시물 수
 -- end 계산 : (페이지번호-1) * 한 페이지당 게시물 수
 
+-- 검색시에도 페이지 나누기가 있어야함
+-- 추가되는 부분 : ex) AND title LIKE '%File%'
+SELECT bno, title, name, REGDATE ,READ_COUNT ,RE_LEV
+FROM
+(SELECT rownum AS rnum, A.*
+FROM (SELECT rownum, bno, title, name, REGDATE ,READ_COUNT ,RE_LEV  
+FROM BOARD b WHERE bno > 0 AND title LIKE '%File%'
+ORDER BY RE_REF DESC, RE_SEQ) A
+WHERE rownum <= 30) 
+WHERE rnum > 0 ;
 
+-- 전체 게시물 수
+SELECT COUNT(*)  FROM BOARD b ;
+
+-- 검색한 게시물 전체 개수
+SELECT COUNT(*)  FROM BOARD b WHERE TITLE LIKE '%File%';
 
 
 
