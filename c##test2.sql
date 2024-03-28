@@ -187,10 +187,135 @@ UPDATE BOARD SET RE_SEQ = RE_SEQ + 1 WHERE RE_REF = 2316 AND RE_SEQ > 0;
 INSERT INTO board(bno,name,password,title,content,attatch,re_ref,re_lev,re_seq)
 VALUES(board_seq.nextval,'홍길동','12345','re:댓글2 작성','re:댓글2 작성',NULL,2316,1,1);
 
+INSERT INTO BOARD(bno,name,password,title,content,attatch,re_ref,re_lev,re_seq)
+VALUES(board_seq.nextval,'aa','a123','댓글1','댓글1내용',NULL,2315,1,1);
+
+SELECT * FROM BOARD b WHERE RE_REF =2315 ORDER BY RE_SEQ ;
+
+UPDATE BOARD SET RE_SEQ = RE_SEQ + 1 WHERE RE_REF = 2315 AND RE_SEQ > 0;
+
+INSERT INTO BOARD(bno,name,password,title,content,attatch,re_ref,re_lev,re_seq)
+VALUES(board_seq.nextval,'bb','b123','댓글2','댓글2내용',NULL,2315,1,1);
+
+
+
 
 SELECT * FROM BOARD b WHERE RE_REF = 2316 ORDER BY RE_REF DESC, RE_SEQ  ;
 
 SELECT BNO ,TITLE ,NAME ,REGDATE ,READ_COUNT ,RE_LEV  FROM BOARD b ORDER BY RE_REF DESC, RE_SEQ  ;
+
+UPDATE BOARD SET READ_COUNT = READ_COUNT + 1 WHERE BNO = 2316;
+
+--검색
+SELECT * 
+FROM BOARD b 
+WHERE NAME = '홍길동' 
+ORDER BY RE_REF DESC, RE_SEQ  ;
+
+SELECT * 
+FROM BOARD b 
+WHERE TITLE  = '홍길동' 
+ORDER BY RE_REF DESC, RE_SEQ  ;
+
+SELECT * 
+FROM BOARD b 
+WHERE CONTENT  = '홍길동' 
+ORDER BY RE_REF DESC, RE_SEQ  ;
+
+-- 페이지 나누기
+-- rownum : 가상컬럼 => 조회된 결과값에 번호를 부여
+
+SELECT rownum, bno, title FROM BOARD ORDER BY bno DESC ;
+
+SELECT rownum, bno, title FROM BOARD WHERE rownum > 1 ;
+
+SELECT rownum, bno, title FROM BOARD WHERE rownum <= 10 ORDER BY BNO  DESC  ;
+
+-- rownum이 먼저 부여가 되기 때문에 (정렬된후 행에 번호가 붙는게 아님)
+SELECT rownum, bno, title, name, REGDATE ,READ_COUNT ,RE_LEV  
+FROM BOARD b 
+WHERE rownum <= 10
+ORDER BY RE_REF DESC, RE_SEQ  ;
+
+
+-- 1.
+SELECT rownum, bno, title, name, REGDATE ,READ_COUNT ,RE_LEV  
+FROM BOARD b WHERE bno > 0
+ORDER BY RE_REF DESC, RE_SEQ;
+
+-- 2.
+-- 위의 테이블에서 다시 새로 rownum이 부여
+SELECT rownum AS rnum, A.*
+FROM (SELECT rownum, bno, title, name, REGDATE ,READ_COUNT ,RE_LEV  
+FROM BOARD b WHERE bno > 0
+ORDER BY RE_REF DESC, RE_SEQ) A
+WHERE rownum <= 60
+
+-- 3.
+SELECT bno, title, name, REGDATE ,READ_COUNT ,RE_LEV
+FROM
+(SELECT rownum AS rnum, A.*
+FROM (SELECT rownum, bno, title, name, REGDATE ,READ_COUNT ,RE_LEV  
+FROM BOARD b WHERE bno > 0
+ORDER BY RE_REF DESC, RE_SEQ) A
+WHERE rownum <= ?) 
+WHERE rnum > ? ;
+
+-- 페이지 당 30개씩
+-- 1 page => 1 ~ 30
+-- 2 page => 31 ~ 60
+
+-- 1 * 30 = 30
+-- (1-1) * 30 = 0
+
+-- start 계산 : 페이지번호 * 한 페이지당 게시물 수
+-- end 계산 : (페이지번호-1) * 한 페이지당 게시물 수
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
