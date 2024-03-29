@@ -288,12 +288,20 @@ SELECT COUNT(*)  FROM BOARD b ;
 -- 검색한 게시물 전체 개수
 SELECT COUNT(*)  FROM BOARD b WHERE TITLE LIKE '%File%';
 
+UPDATE BOARD SET READ_COUNT = READ_COUNT + 1 WHERE BNO = 2350;
 
+INSERT INTO BOARD(bno,name,password,title,content,attatch,re_ref,re_lev,re_seq)
+VALUES(board_seq.nextval,'bb','b123','댓글2','댓글2내용',NULL,2350,1,1);
 
+SELECT * FROM BOARD WHERE RE_REF = 2350;
 
+-- 댓글 삭제
+DELETE FROM BOARD WHERE BNO=12;
 
-
-
+-- 부모글 + 댓글 삭제
+-- 단, 부모글이라면
+-- BNO == RE_REF
+DELETE FROM BOARD WHERE RE_REF = 2350;
 
 
 
