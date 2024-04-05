@@ -41,6 +41,15 @@ INSERT INTO TEAM_MEMBER1 tm VALUES('member1','홍길동','team1');
 DELETE FROM TEAM_MEMBER1 tm WHERE member_id = 'member1';
 
 -- 조회
+-- 1. JOIN
+-- 1) 내부join : 두 테이블이 서로 일치할 때 가져오기
+-- 2) 외부join : 두 테이블이 일치하지 않아도 가져오기
+--    (1) left join : 왼쪽 테이블 기준
+--    (2) right join : 오른쪽 테이블 기준
+
+
+
+
 -- member1 의 정보와 member1이 속한 팀의 정보 조회
 SELECT t1.MEMBER_ID ,t1.USERNAME ,t1.TEAM_ID ,t.NAME 
 FROM TEAM_MEMBER1 t1
@@ -54,7 +63,10 @@ JOIN TEAM1 t ON t1.team_id = t.TEAM_ID
 WHERE t.TEAM_ID = 'team1';
 
 
-
+-- member2 회원 조회 시 나와 같은 팀에 소속된 회원 조회
+SELECT *
+FROM TEAM_MEMBER tm
+WHERE TEAM_TEAM_ID = (SELECT TEAM_TEAM_ID FROM TEAM_MEMBER tm2 WHERE MEMBER_ID='member2');
 
 
 
