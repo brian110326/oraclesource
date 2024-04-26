@@ -97,6 +97,153 @@ IN (SELECT MIN(mi.inum) FROM MOVIE_IMAGE mi GROUP BY mi.movie_mno)) A ON m.MNO =
 ORDER BY MNO DESC ;
 
 
+-- 특정 영화의 정보 + 평균평점 + 리뷰 수 + 이미지(정보전체)
+SELECT m.MNO ,m.CREATED_DATE ,m.TITLE , mi2.IMG_NAME , mi2."PATH" ,mi2.UUID, 
+(SELECT COUNT(DISTINCT r.review_no)  FROM REVIEW r WHERE r.movie_mno = m.MNO) AS review_cnt,
+(SELECT AVG(r.GRADE)  FROM REVIEW r WHERE r.movie_mno = m.MNO) AS grade_avg
+FROM MOVIE_IMAGE mi2 LEFT JOIN MOVIE m ON mi2.MOVIE_MNO = m.MNO
+WHERE mi2.MOVIE_MNO = 3;
+
+
+-- 영화삭제 => 영화이미지, 리뷰가 먼저 삭제되어야함
+-- 이미지 삭제
+DELETE  FROM MOVIE_IMAGE mi WHERE mi.movie_mno=1;
+DELETE  FROM REVIEW r WHERE r.movie_mno=1;
+DELETE FROM MOVIE m WHERE m.mno=1;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
